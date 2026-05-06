@@ -1,1 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outbreak Survival Manual</title>
+  <style>
+    :root {
+      --paper: #efe3c8;
+      --paper-dark: #d8c39f;
+      --ink: #33291c;
+      --muted: #6f6045;
+      --khaki: #8b8c52;
+      --olive: #59613a;
+      --brown: #7a5533;
+      --accent: #c46b3b;
+      --cream: #fff4d6;
+      --shadow: rgba(51, 41, 28, 0.18);
+      --critical: #9f3d2e;
+      --high: #b66a35;
+      --medium: #8b8c52;
+      --easy: #59613a;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(139, 140, 82, 0.25), transparent 32rem),
+        linear-gradient(180deg, var(--paper), #e4d1aa);
+      color: var(--ink);
+      font-family: "Trebuchet MS", Arial, sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.13;
+      background-image:
+        linear-gradient(rgba(51, 41, 28, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(51, 41, 28, 0.08) 1px, transparent 1px);
+      background-size: 34px 34px;
+      z-index: -1;
+    }
+
+    header {
+      padding: 24px clamp(18px, 5vw, 72px);
+    }
+
+    nav {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: var(--olive);
+      text-transform: uppercase;
+    }
+
+    .back {
+      color: var(--olive);
+      border: 2px solid var(--olive);
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-decoration: none;
+      font-weight: 900;
+      background: rgba(255, 244, 214, 0.35);
+    }
+
+    .back:hover {
+      color: var(--cream);
+      background: var(--olive);
+    }
+
+    .book {
+      max-width: 1120px;
+      margin: 0 auto 64px;
+      padding: 34px clamp(18px, 5vw, 72px);
+    }
+
+    .cover {
+      background: rgba(255, 244, 214, 0.72);
+      border: 2px solid rgba(51, 41, 28, 0.16);
+      border-radius: 32px;
+      padding: clamp(24px, 5vw, 52px);
+      box-shadow: 0 24px 50px var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: "FIELD MANUAL";
+      position: absolute;
+      right: -34px;
+      top: 28px;
+      background: var(--khaki);
+      color: var(--cream);
+      padding: 8px 46px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      transform: rotate(32deg);
+    }
+
+    .stamp {
+      display: inline-block;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-weight: 900;
+      transform: rotate(-2deg);
+      background: rgba(255, 244, 214, 0.55);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.7rem, 7vw, 6rem);
+      line-height: 0.9;
+      letter-spacing: -0.06em;
+      text-transform: uppercase;
+      max-width: 850px;
+    }
+
+    h1 span {
+      color: var(--olive);
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 720px;
+      font-size: 1.12rem;
+      line-height: 1.6;
+      margin: 22px 0 0;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      padding: 7px 11px;
+      background: var(--paper-dark);
+      color: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--olive);
+    }
+
+    .dot.critical { background: var(--critical); }
+    .dot.high { background: var(--high); }
+    .dot.medium { background: var(--medium); }
+    .dot.easy { background: var(--easy); }
+
+    .section-title {
+      margin: 42px 0 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 2rem;
+      text-transform: uppercase;
+    }
+
+    .section-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .chapters {
+      display: grid;
+      gap: 18px;
+    }
+
+    .chapter {
+      background: rgba(255, 244, 214, 0.78);
+      border: 2px solid rgba(51, 41, 28, 0.16);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 14px 26px var(--shadow);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chapter::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px dashed rgba(51, 41, 28, 0.14);
+      border-radius: 22px;
+      pointer-events: none;
+    }
+
+    .number {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: var(--paper-dark);
+      color: var(--brown);
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+
+    .chapter-content {
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chapter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .chapter h3 {
+      margin: 0;
+      color: var(--brown);
+      font-size: 1.35rem;
+    }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      color: var(--cream);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .badge.critical { background: var(--critical); }
+    .badge.high { background: var(--high); }
+    .badge.medium { background: var(--medium); }
+    .badge.easy { background: var(--easy); }
+
+    .chapter p {
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0 0 14px;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      background: rgba(216, 195, 159, 0.58);
+      border-radius: 14px;
+      padding: 10px 12px;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .checklist li::before {
+      content: "□ ";
+      color: var(--olive);
+      font-weight: 900;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .book {
+        padding-top: 18px;
+      }
+
+      .cover::before {
+        display: none;
+      }
+
+      .chapter {
+        grid-template-columns: 1fr;
+      }
+
+      .number {
+        width: 52px;
+        height: 52px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div class="logo">Outbreak Terminal / Manual</div>
+      <a class="back" href="index.html">← Back to Terminal</a>
+    </nav>
+  </header>
+
+  <main class="book">
+    <section class="cover">
+      <div class="stamp">SORTED BY SURVIVAL VALUE</div>
+      <h1>Outbreak <span>Survival</span> Manual</h1>
+      <p class="lead">
+        A tiny field book of useful skills, ordered by how much they matter
+        when everything gets stupid. Start with critical basics, then unlock
+        the fancy goblin competence later.
+      </p>
+
+      <div class="legend">
+        <span class="pill"><span class="dot critical"></span>Critical</span>
+        <span class="pill"><span class="dot high"></span>High</span>
+        <span class="pill"><span class="dot medium"></span>Medium</span>
+        <span class="pill"><span class="dot easy"></span>Easy</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <h2>Chapters</h2>
+        <p>Ordered by importance first, difficulty second.</p>
+      </div>
+
+      <div class="chapters">
+        <article class="chapter">
+          <div class="number">01</div>
+          <div class="chapter-content">
+            <div class="chapter-head">
+              <h3>Water Safety</h3>
+              <div class="badges">
+                <span class="badge critical">Critical</span>
+                <span class="badge easy">Easy</span>
+              </div>
+            </div>
+            <p>
+              Water is priority zero. Mystery puddle soup is not a beverage,
+              no matter how cinematic the lighting is.
+            </p>
+            <ul class="checklist">
+              <li>Filter visible dirt before boiling.</li>
+              <li>Boil when possible.</li>
+              <li>Store clean water away from dirty containers.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="chapter">
+          <div class="number">02</div>
+          <div class="chapter-content">
+            <div class="chapter-head">
+              <h3>First Aid Basics</h3>
+              <div class="badges">
+                <span class="badge critical">Critical</span>
+                <span class="badge medium">Medium</span>
+              </div>
+            </div>
+            <p>
+              Most disasters are less dramatic than movies and more annoying:
+              cuts, sprains, infection, bad decisions.
+            </p>
+            <ul class="checklist">
+              <li>Stop bleeding with pressure.</li>
+              <li>Clean wounds before wrapping.</li>
+              <li>Keep bandages dry and accessible.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="chapter">
+          <div class="number">03</div>
+          <div class="chapter-content">
+            <div class="chapter-head">
+              <h3>Shelter & Warmth</h3>
+              <div class="badges">
+                <span class="badge high">High</span>
+                <span class="badge medium">Medium</span>
+              </div>
+            </div>
+            <p>
+              Shelter is not just a roof. It is wind control, dryness, warmth,
+              and not sleeping like a damp sandwich.
+            </p>
+            <ul class="checklist">
+              <li>Block wind first.</li>
+              <li>Keep yourself off cold ground.</li>
+              <li>Stay dry before trying to stay warm.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="chapter">
+          <div class="number">04</div>
+          <div class="chapter-content">
+            <div class="chapter-head">
+              <h3>Scavenging Rules</h3>
+              <div class="badges">
+                <span class="badge high">High</span>
+                <span class="badge medium">Medium</span>
+              </div>
+            </div>
+            <p>
+              Good scavenging is boring. You enter, take useful items, leave.
+              You do not start decorating your backpack with junk loot.
+            </p>
+            <ul class="checklist">
+              <li>Know what you need before entering.</li>
+              <li>Prioritize water, food, medicine, batteries.</li>
+              <li>Leave before the building starts feeling like a plot device.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="chapter">
+          <div class="number">05</div>
+          <div class="chapter-content">
+            <div class="chapter-head">
+              <h3>Radio Discipline</h3>
+              <div class="badges">
+                <span class="badge medium">Medium</span>
+                <span class="badge easy">Easy</span>
+              </div>
+            </div>
+            <p>
+              A radio is not a podcast studio. Clear messages save battery,
+              time, and everyone’s remaining patience.
+            </p>
+            <ul class="checklist">
+              <li>Say who you are.</li>
+              <li>Say where you are.</li>
+              <li>Say what you need.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="chapter">
+          <div class="number">06</div>
+          <div class="chapter-content">
+            <div class="chapter-head">
+              <h3>Quiet Movement</h3>
+              <div class="badges">
+                <span class="badge medium">Medium</span>
+                <span class="badge medium">Medium</span>
+              </div>
+            </div>
+            <p>
+              Noise discipline is just stealth with fewer ninja fantasies.
+              If it rattles, tape it. If it squeaks, fix it.
+            </p>
+            <ul class="checklist">
+              <li>Secure loose gear.</li>
+              <li>Step slowly before stepping fast.</li>
+              <li>Avoid glass, metal scraps, and dramatic entrances.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Outbreak Survival Manual — cute field notes for deeply unserious disasters.
+  </footer>
+</body>
+</html>
