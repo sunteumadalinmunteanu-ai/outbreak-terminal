@@ -16,6 +16,7 @@
       --accent: #c46b3b;
       --cream: #fff4d6;
       --shadow: rgba(51, 41, 28, 0.18);
+      --rec-red: #ff2b2b;
     }
 
     * {
@@ -107,6 +108,40 @@
       transform: rotate(-2deg);
       background: rgba(255, 244, 214, 0.55);
       margin-bottom: 16px;
+      cursor: pointer;
+      transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        transform 0.15s ease;
+    }
+
+    .stamp:hover {
+      transform: rotate(-2deg) translateY(-2px);
+    }
+
+    .stamp.is-playing {
+      color: var(--rec-red);
+      border-color: var(--rec-red);
+      background: rgba(255, 43, 43, 0.08);
+      box-shadow:
+        0 0 8px rgba(255, 43, 43, 0.55),
+        0 0 22px rgba(255, 43, 43, 0.28);
+      animation: recPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes recPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 8px rgba(255, 43, 43, 0.5),
+          0 0 22px rgba(255, 43, 43, 0.22);
+      }
+      50% {
+        box-shadow:
+          0 0 12px rgba(255, 43, 43, 0.8),
+          0 0 34px rgba(255, 43, 43, 0.38);
+      }
     }
 
     h1 {
@@ -361,6 +396,7 @@
       font-weight: 900;
       cursor: pointer;
       transition: transform 0.15s ease;
+      font-family: inherit;
     }
 
     button:hover {
@@ -408,6 +444,10 @@
 </head>
 
 <body>
+  <audio id="droneZoneStream" preload="none">
+    <source src="https://ice5.somafm.com/dronezone-128-mp3" type="audio/mpeg">
+  </audio>
+
   <header>
     <nav>
       <div class="logo">Outbreak Terminal</div>
@@ -421,14 +461,17 @@
 
   <section class="hero">
     <div>
-      <div class="stamp">DO NOT PANIC</div>
+      <button class="stamp" id="panicButton" type="button" aria-label="Play or pause Drone Zone radio">
+        DO NOT PANIC
+      </button>
+
       <h1>Zombie <span>Survival</span> Skills</h1>
       <p class="lead">
         A cozy little apocalypse handbook for ugly little situations.
         Learn the basics, collect fake XP, and pretend you have a plan.
       </p>
       <div class="buttons">
-        <a class="btn" href="#skills">Open Survival Manual</a>
+        <a class="btn" href="manual.html">Open Survival Manual</a>
         <a class="btn secondary" href="#tip">Give Me Advice</a>
       </div>
     </div>
@@ -557,6 +600,23 @@
       const random = tips[Math.floor(Math.random() * tips.length)];
       document.getElementById("randomTip").textContent = random;
     }
+
+    const panicButton = document.getElementById("panicButton");
+    const droneZoneStream = document.getElementById("droneZoneStream");
+
+    panicButton.addEventListener("click", async () => {
+      if (droneZoneStream.paused) {
+        try {
+          await droneZoneStream.play();
+          panicButton.classList.add("is-playing");
+        } catch (error) {
+          console.log("Audio stream could not start:", error);
+        }
+      } else {
+        droneZoneStream.pause();
+        panicButton.classList.remove("is-playing");
+      }
+    });
   </script>
 </body>
 </html>
